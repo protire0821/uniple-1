@@ -6,48 +6,48 @@ public class ContinuousVideoPlayer : MonoBehaviour
 {
     public VideoPlayer vp;
     public VideoClip[] clips;
-    public Text stageText; // UI Text ¤¸¯À
-    public Text angleText; // UI Text ¤¸¯À
+    public Text stageText; // UI Text ï¿½ï¿½ï¿½ï¿½
+    public Text angleText; // UI Text ï¿½ï¿½ï¿½ï¿½
     private int currentClipIndex = 0;
     private bool isPlaying = true;
 
     void Start()
     {
-        // ÀË¬d VideoPlayer ©M clips ¬O§_¤w¤À°t
+        // ï¿½Ë¬d VideoPlayer ï¿½M clips ï¿½Oï¿½_ï¿½wï¿½ï¿½ï¿½t
         if (vp != null && clips != null && clips.Length > 0)
         {
-            // ³]¸m²Ä¤@­Ó¼v¤ù¤ù¬q¨Ã¼½©ñ
+            // ï¿½]ï¿½mï¿½Ä¤@ï¿½Ó¼vï¿½ï¿½ï¿½ï¿½ï¿½qï¿½Ã¼ï¿½ï¿½ï¿½
             vp.clip = clips[currentClipIndex];
             vp.Play();
-            // §ó·s UI ¤å¦r
+            // ï¿½ï¿½s UI ï¿½ï¿½r
             UpdateStageText();
-            // ­q¾\¼v¤ù¼½©ñ§¹¦¨¨Æ¥ó
+            // ï¿½qï¿½\ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ñ§¹¦ï¿½ï¿½Æ¥ï¿½
             vp.loopPointReached += OnVideoLoopPointReached;
         }
         else
         {
-            Debug.LogError("VideoPlayer ©Î VideoClip °}¦C¥¼¤À°t¡I");
+            Debug.LogError("VideoPlayer ï¿½ï¿½ VideoClip ï¿½}ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½tï¿½I");
         }
     }
 
-    // ¼v¤ù´`Àô¼½©ñ§¹¦¨®Éªº¦^½Õ¨ç¼Æ
+    // ï¿½vï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ñ§¹¦ï¿½ï¿½Éªï¿½ï¿½^ï¿½Õ¨ï¿½ï¿½
     void OnVideoLoopPointReached(VideoPlayer player)
     {
-        // ¼W¥[·í«e¼v¤ù¯Á¤Þ
+        // ï¿½Wï¿½[ï¿½ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         currentClipIndex++;
-        // ¦pªG·í«e¼v¤ù¯Á¤Þ¶W¹L°}¦C½d³ò¡A­«¸m¬° 0
+        // ï¿½pï¿½Gï¿½ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Þ¶Wï¿½Lï¿½}ï¿½Cï¿½dï¿½ï¿½Aï¿½ï¿½ï¿½mï¿½ï¿½ 0
         if (currentClipIndex >= clips.Length)
         {
             currentClipIndex = 0;
         }
-        // ³]¸m¤U¤@­Ó¼v¤ù¤ù¬q¨Ã¼½©ñ
+        // ï¿½]ï¿½mï¿½Uï¿½@ï¿½Ó¼vï¿½ï¿½ï¿½ï¿½ï¿½qï¿½Ã¼ï¿½ï¿½ï¿½
         vp.clip = clips[currentClipIndex];
         vp.Play();
-        // §ó·s UI ¤å¦r
+        // ï¿½ï¿½s UI ï¿½ï¿½r
         UpdateStageText();
     }
 
-    // ¦b¸}¥»³Q¸T¥Î©Î¾P·´®É¨ú®ø­q¾\¨Æ¥ó
+    // ï¿½bï¿½}ï¿½ï¿½ï¿½Qï¿½Tï¿½Î©Î¾Pï¿½ï¿½ï¿½É¨ï¿½ï¿½ï¿½ï¿½qï¿½\ï¿½Æ¥ï¿½
     void OnDisable()
     {
         if (vp != null)
@@ -59,21 +59,21 @@ public class ContinuousVideoPlayer : MonoBehaviour
     void Update()
     {
 
-        // ª½±µ±q PipeServer Ãþ¤¤Àò¨ú nodeAngles °}¦C
+        // ï¿½ï¿½ï¿½ï¿½ï¿½q PipeServer ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ nodeAngles ï¿½}ï¿½C
         float[] nodeAngles = PipeServer.nodeAngles;
         if (nodeAngles != null && nodeAngles.Length > 12)
         {
-            // ¨ú±o¨¤«×¨ÃÂà´«¬°¾ã¼Æ
+            // ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½×¨ï¿½ï¿½à´«ï¿½ï¿½ï¿½ï¿½ï¿½
             int angle = Mathf.RoundToInt(nodeAngles[11]);
             int angle12 = Mathf.RoundToInt(nodeAngles[12]);
-            // ±N¨¤«×Åã¥Ü¦b¹CÀ¸µe­±¤¤
+            // ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¦bï¿½Cï¿½ï¿½ï¿½eï¿½ï¿½ï¿½ï¿½
             Debug.Log(angle);
         }
        
-        // ÀË´úÁä½L¿é¤J¨Ã°õ¦æ¬ÛÀ³ªº¾Þ§@
+        // ï¿½Ë´ï¿½ï¿½ï¿½Lï¿½ï¿½Jï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ§@
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            // ¦pªG¥¿¦b¼½©ñ¡A«h¼È°±¡F¦pªG¤w¼È°±¡A«h«ì´_¼½©ñ
+            // ï¿½pï¿½Gï¿½ï¿½ï¿½bï¿½ï¿½ï¿½ï¿½Aï¿½hï¿½È°ï¿½ï¿½Fï¿½pï¿½Gï¿½wï¿½È°ï¿½ï¿½Aï¿½hï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½
             if (isPlaying)
             {
                 vp.Pause();
@@ -82,63 +82,63 @@ public class ContinuousVideoPlayer : MonoBehaviour
             {
                 vp.Play();
             }
-            // ¤Á´«¼½©ñª¬ºA
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñª¬ºA
             isPlaying = !isPlaying;
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            // ¦pªG¥¿¦b¼½©ñ¡A«h¼È°±
+            // ï¿½pï¿½Gï¿½ï¿½ï¿½bï¿½ï¿½ï¿½ï¿½Aï¿½hï¿½È°ï¿½
             if (isPlaying)
             {
                 vp.Pause();
                 isPlaying = false;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (AngleDisplay.isIncreaseStage)
         {
-            // ©¹¤U¤@³¡¼v¤ù
+            // ï¿½ï¿½ï¿½Uï¿½@ï¿½ï¿½ï¿½vï¿½ï¿½
             NextVideo();
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            // ©¹¤W¤@³¡¼v¤ù
+            // ï¿½ï¿½ï¿½Wï¿½@ï¿½ï¿½ï¿½vï¿½ï¿½
             PreviousVideo();
         }
     }
 
     void NextVideo()
     {
-        // ¼W¥[·í«e¼v¤ù¯Á¤Þ
+        // ï¿½Wï¿½[ï¿½ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         currentClipIndex++;
-        // ¦pªG·í«e¼v¤ù¯Á¤Þ¶W¹L°}¦C½d³ò¡A­«¸m¬° 0
+        // ï¿½pï¿½Gï¿½ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Þ¶Wï¿½Lï¿½}ï¿½Cï¿½dï¿½ï¿½Aï¿½ï¿½ï¿½mï¿½ï¿½ 0
         if (currentClipIndex >= clips.Length)
         {
             currentClipIndex = 0;
         }
-        // ³]¸m¤U¤@­Ó¼v¤ù¤ù¬q¨Ã¼½©ñ
+        // ï¿½]ï¿½mï¿½Uï¿½@ï¿½Ó¼vï¿½ï¿½ï¿½ï¿½ï¿½qï¿½Ã¼ï¿½ï¿½ï¿½
         vp.clip = clips[currentClipIndex];
         vp.Play();
-        // §ó·s UI ¤å¦r
+        // ï¿½ï¿½s UI ï¿½ï¿½r
         UpdateStageText();
     }
 
     void PreviousVideo()
     {
-        // ´î¤Ö·í«e¼v¤ù¯Á¤Þ
+        // ï¿½ï¿½Ö·ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         currentClipIndex--;
-        // ¦pªG·í«e¼v¤ù¯Á¤Þ¤p©ó 0¡A­«¸m¬°°}¦Cªº³Ì«á¤@­Ó¯Á¤Þ
+        // ï¿½pï¿½Gï¿½ï¿½ï¿½eï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Þ¤pï¿½ï¿½ 0ï¿½Aï¿½ï¿½ï¿½mï¿½ï¿½ï¿½}ï¿½Cï¿½ï¿½ï¿½Ì«ï¿½@ï¿½Ó¯ï¿½ï¿½ï¿½
         if (currentClipIndex < 0)
         {
             currentClipIndex = clips.Length - 1;
         }
-        // ³]¸m¤W¤@­Ó¼v¤ù¤ù¬q¨Ã¼½©ñ
+        // ï¿½]ï¿½mï¿½Wï¿½@ï¿½Ó¼vï¿½ï¿½ï¿½ï¿½ï¿½qï¿½Ã¼ï¿½ï¿½ï¿½
         vp.clip = clips[currentClipIndex];
         vp.Play();
-        // §ó·s UI ¤å¦r
+        // ï¿½ï¿½s UI ï¿½ï¿½r
         UpdateStageText();
     }
 
-    // §ó·s UI ¤å¦r
+    // ï¿½ï¿½s UI ï¿½ï¿½r
     void UpdateStageText()
     {
         if (stageText != null)

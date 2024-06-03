@@ -19,7 +19,7 @@ public class PipeServer : MonoBehaviour
     public GameObject landmarkPrefab;
     public GameObject linePrefab;
     public GameObject headPrefab;
-    public bool anchoredBody = false;
+    public bool anchoredBody = true;
     public bool enableHead = true;
     public float multiplier = 10f;
     public float landmarkScale = 1f;
@@ -33,6 +33,7 @@ public class PipeServer : MonoBehaviour
     const int LINES_COUNT = 11;
 
     public static float[] nodeAngles = new float[LANDMARK_COUNT];  // 公用節點角度陣列
+    public static Vector3[] nodePositions = new Vector3[LANDMARK_COUNT];  // 公用節點座標陣列
 
     private Vector3 GetNormal(Vector3 p1, Vector3 p2, Vector3 p3)
     {
@@ -223,6 +224,8 @@ public class PipeServer : MonoBehaviour
                 continue;
             b.localPositionTargets[i] = b.positionsBuffer[i].value / (float)b.positionsBuffer[i].accumulatedValuesCount * multiplier;
             b.positionsBuffer[i] = new AccumulatedBuffer(Vector3.zero, 0);
+
+            nodePositions[i] = b.Position((Landmark)i);
         }
 
         if (!b.setCalibration)
@@ -234,9 +237,7 @@ public class PipeServer : MonoBehaviour
                 FindObjectOfType<CameraController>().Calibrate(b.instances[(int)Landmark.NOSE].transform);
         }
 
-        Debug.Log("Node position for " + 11 + ": " + b.Position((Landmark)11));
-        b.GetNodeAngle();
-        Debug.Log("Node Angle for " + 11 + ": " + nodeAngles[11]);
+        b.GetNodeAngle();   //得到節點角度
 
         for (int i = 0; i < LANDMARK_COUNT; ++i)
         {

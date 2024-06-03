@@ -6,6 +6,7 @@ public class AngleDisplay : MonoBehaviour
 {
     public Text angleText; // 顯示角度的文本
     public Text angle12Text; // 顯示角度12的文本
+    public Text angle13Text; // 顯示角度12的文本
     public Text timerText; // 顯示計時器的文本
     public Text breathText; // 顯示深呼吸狀態的文本
     public Text stageText; // 顯示關卡的文本
@@ -13,6 +14,11 @@ public class AngleDisplay : MonoBehaviour
     public Slider extraEnergyBar; // 新增的能量條
     public Slider angleEnergyBar; // 與角度相關的能量條
     public Slider angle12EnergyBar; // 與角度12相關的能量條
+    public Slider angle13EnergyBar; // 與角度23相關的能量條
+    public Slider angle14EnergyBar; // 與角度24相關的能量條
+    public Text StatusText; // 顯示第一關狀態的文本
+    public GameObject introPanel;
+
 
     private float elapsedTime = 0f; // 累積經過的時間
     private bool isBreathing = false; // 是否正在深呼吸
@@ -26,6 +32,8 @@ public class AngleDisplay : MonoBehaviour
     private bool isCharging = false; // 是否正在充能
     private int chargeCount = 0; // 充能計數
     private int currentStage = 1; // 當前關卡
+    public static bool isIncreaseStage = false;
+    private bool isDisplayIntro = false;
 
     void Start()
     {
@@ -34,6 +42,8 @@ public class AngleDisplay : MonoBehaviour
         extraEnergyBar.value = 0f;
         angleEnergyBar.value = 0f;
         angle12EnergyBar.value = 0f;
+        angle13EnergyBar.value = 0f;
+        angle14EnergyBar.value = 0f;
         stageText.text = "Stage: 1"; // 設置初始關卡
     }
 
@@ -52,11 +62,13 @@ public class AngleDisplay : MonoBehaviour
         float[] nodeAngles = PipeServer.nodeAngles;
 
         // 確保 nodeAngles 已初始化並且長度足夠
-        if (nodeAngles != null && nodeAngles.Length > 12)
+        if (nodeAngles != null && nodeAngles.Length > 24)
         {
             // 取得角度並轉換為整數
             int angle = Mathf.RoundToInt(nodeAngles[11]);
             int angle12 = Mathf.RoundToInt(nodeAngles[12]);
+            int angle13 = Mathf.RoundToInt(nodeAngles[13]);
+            int angle14 = Mathf.RoundToInt(nodeAngles[14]);
             // 將角度顯示在遊戲畫面中
             angleText.text = "角度左: " + angle.ToString() + " 度";
             angle12Text.text = "角度右: " + angle12.ToString() + " 度";
@@ -65,17 +77,51 @@ public class AngleDisplay : MonoBehaviour
             angleEnergyBar.value = Mathf.Clamp01(angle / 170f);
             angle12EnergyBar.value = Mathf.Clamp01(angle12 / 170f);
 
+            if (currentStage == 1 && angle13 >= 100 && angle13 <= 120 && angle14 >= 100 && angle14 <= 120)
+            {
+                // 姿勢正確的處理邏輯
+                StatusText.text = "correct";
+            }
+            else
+            {
+                // 姿勢不正確的處理邏輯
+                StatusText.text = "not correct";
+            }
+
+            if (currentStage == 2 && angle13 >= 50 && angle13 <= 70)
+            {
+                // 姿勢正確的處理邏輯
+                StatusText.text = "correct";
+            }
+            else
+            {
+                // 姿勢不正確的處理邏輯
+                StatusText.text = "not correct";
+            }
+
+            if (currentStage == 3 && angle13 >= 110 && angle13 <= 130)
+            {
+                // 姿勢正確的處理邏輯
+                StatusText.text = "correct";
+            }
+            else
+            {
+                // 姿勢不正確的處理邏輯
+                StatusText.text = "not correct";
+            }
+
             // 第一關：檢查角度是否超過165度
             if (currentStage == 1 && angle > 165 && !isWaitingForSafetyBelt)
             {
-                IncreaseStage();
+                isDisplayIntro = true;
             }
 
             // 第二關：檢查角度12是否超過165度
             if (currentStage == 2 && angle12 > 165 && !isWaitingForAngle12)
             {
-                IncreaseStage();
+                isDisplayIntro = true;
             }
+
         }
         else
         {
@@ -85,19 +131,42 @@ public class AngleDisplay : MonoBehaviour
         // 檢測鍵盤按鍵事件
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            
+            isDisplayIntro = false;
+            introPanel.SetActive(false);
             DecreaseStage();
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            IncreaseStage();
+            isDisplayIntro = true;
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             TogglePauseTimer();
         }
+
+        if (isDisplayIntro)
+        {
+            introPanel.SetActive(true);
+            DisplayIntro(currentStage);
+            
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                isIncreaseStage = true;
+            }
+        }
+        
+        if (isIncreaseStage)
+        {
+            isDisplayIntro = false;
+            introPanel.SetActive(false);
+            IncreaseStage();
+        }
     }
+
+    
 
     // 更新計時器
     void UpdateTimer()
@@ -279,6 +348,8 @@ public class AngleDisplay : MonoBehaviour
         extraEnergyBar.value = 0f;
         angleEnergyBar.value = 0f;
         angle12EnergyBar.value = 0f;
+        angle13EnergyBar.value = 0f;
+        angle14EnergyBar.value = 0f;
     }
 
     // 暫停或繼續計時器
@@ -363,7 +434,34 @@ public class AngleDisplay : MonoBehaviour
             breathText.text = "";
         }
     }
+
+    private void DisplayIntro(int stage)
+    {
+        GameObject IntroPanel = GameObject.Find("IntroPanel");
+        
+        if (IntroPanel != null)
+        {
+            // Hide all levels
+            for (int i = 1; i <= 3; i++)
+            {
+                Transform levelTransform = IntroPanel.transform.Find("Stage " + i);
+                if (levelTransform != null)
+                {
+                    levelTransform.gameObject.SetActive(false);
+                }
+            }
+
+            // Show current level
+            Transform currentLevelTransform = IntroPanel.transform.Find("Stage " + stage);
+            if (currentLevelTransform != null)
+            {
+                currentLevelTransform.gameObject.SetActive(true);
+            }
+        }
+    }
 }
+
+
 
 
 
